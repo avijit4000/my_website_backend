@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
     secret_key: str = Field(min_length=32)
-    database_url: str = "sqlite:///./auth.db"
+    database_url: str = Field(pattern=r"^postgresql(?:\+psycopg)?://")
     access_token_minutes: int = Field(default=30, gt=0)
 
 
@@ -28,10 +28,7 @@ settings = Settings()
 password_hash = PasswordHash.recommended()
 bearer_scheme = HTTPBearer(auto_error=False)
 
-engine = create_engine(
-    settings.database_url,
-    connect_args={"check_same_thread": False} if settings.database_url.startswith("sqlite") else {},
-)
+engine = create_engine(settings.database_url)
 SessionLocal = sessionmaker(bind=engine, expire_on_commit=False)
 
 

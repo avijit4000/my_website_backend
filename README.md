@@ -1,13 +1,17 @@
 # FastAPI authentication backend
 
-This small API provides account registration, login, logout, and current-user lookup. It uses SQLite by default, Argon2 password hashing, and signed bearer access tokens.
+This small API provides account registration, login, logout, and current-user lookup. It uses PostgreSQL, Argon2 password hashing, and signed bearer access tokens.
 
 ## Run locally
 
-1. Create and activate a virtual environment, then install `requirements.txt`.
-2. Copy `.env.example` to `.env` and replace `SECRET_KEY` with a private random value of at least 32 characters. Do not commit `.env`.
-3. Start the API with `uvicorn main:app --reload`.
-4. Open `/docs` on the local server to try the endpoints.
+1. Install and start PostgreSQL, then create a database named `auth_db`.
+2. Create and activate a virtual environment, then install `requirements.txt`.
+3. Copy `.env.example` to `.env`. Set `DATABASE_URL` to your PostgreSQL connection string and replace `SECRET_KEY` with a private random value of at least 32 characters. Do not commit `.env`.
+4. Start the API with `uvicorn main:app --reload`.
+5. Open `/docs` on the local server to try the endpoints.
+
+The connection URL uses SQLAlchemy's Psycopg 3 driver, for example:
+`postgresql+psycopg://postgres:YOUR_PASSWORD@localhost:5432/auth_db`.
 
 ## Endpoints
 
@@ -19,4 +23,4 @@ Passwords must be 12–128 characters.
 
 ## Production notes
 
-Use HTTPS, a strong secret stored in a secret manager, and a managed database. Add rate limiting to login, monitoring, and appropriate CORS settings for your frontend. The default SQLite setup is for development, not a multi-instance production deployment.
+Use HTTPS, a strong secret stored in a secret manager, and a managed PostgreSQL database. Add rate limiting to login, monitoring, and appropriate CORS settings for your frontend.
